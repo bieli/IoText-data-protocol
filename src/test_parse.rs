@@ -31,7 +31,7 @@ impl ItemType {
 enum MetricValueType {
     IntegerItemType(i64),
     BoolItemType(bool),
-    //DecimalItemType(i64),
+    //DecimalItemType(Decimal),
     TextItemType(String),
 }
 
@@ -41,7 +41,7 @@ enum ItemTypeEnum {
     DeviceId(String),
 }
 
-const MSG_EXAMPLE: &str = "t|3900237526042,d|device_name_001,m|val_water_level1=i:42,m|light_on=b:1,m|bulb_on=b:0,m|msg_machine_01=t:hello";
+const MSG_EXAMPLE: &str = "t|3900237526042,d|device_name_001,m|val_water_level1=i:42,m|light_on=b:1,m|bulb_on=b:0,m|msg_machine_01=t:hello,m|wind_speed=d:1234.5678";
 
 fn main() {
     let item_parts: Vec<&str> = MSG_EXAMPLE
@@ -90,6 +90,14 @@ fn main() {
                         MetricValueType::TextItemType(metric_parts_values[1].to_string())
                     )
                 }
+                /* 
+                MetricDataTypes::DECIMAL => {
+                    println!(
+                        "\t\t\tDecimalItemType: {:?}",
+                        MetricValueType::DecimalItemType(metric_parts_values[1].to_string())
+                    )
+                }
+                */
                 _ => println!("\t\t\tother"),
             }
         } else {
@@ -166,4 +174,10 @@ item_part: ["m", "msg_machine_01=t:hello"]
 	metric_parts: ["msg_machine_01", "t:hello"]
 		metric_parts_values: ["t", "hello"]
 			BoolItemType: TextItemType("hello")
+part: m|wind_speed=d:1234.5678
+item_part: ["m", "wind_speed=d:1234.5678"]
+	metric: wind_speed=d:1234.5678
+	metric_parts: ["wind_speed", "d:1234.5678"]
+		metric_parts_values: ["d", "1234.5678"]
+			other
 */
