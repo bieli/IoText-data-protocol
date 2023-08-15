@@ -9,7 +9,7 @@ jobs:
         python-version: [37, 38, 39, 310, 311]
     env:
       OS: ${{ matrix.os }}
-      PYTHON: '3.10'
+      PYTHON: ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@master
     - name: Setup Python
