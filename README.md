@@ -1,3 +1,7 @@
+.. |codecov| image:: https://codecov.io/gh/bieli/IoText-data-protocol/branch/main/graphs/badge.svg?branch=main
+    :alt: Coverage Status
+    :target: https://codecov.io/github/bieli/IoText-data-protocol
+
 # IoText-data-protocol
 Internet of Things data protocol - simplistic text and CSV-friendly IoT data protocol. Options: Schema-less, schema+versioning, building deltas for data values. Easy to re-use.
 
