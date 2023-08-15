@@ -31,7 +31,7 @@ class MetricDataItemCodec:
             value = str(value)
         elif mdi.data_type == MetricDataTypes.TEXT.value:
             value = str(value)
-        return f"{mdi.data_type}{data_type_and_value_char}{value}"
+        return f"{mdi.data_type.value}{data_type_and_value_char}{value}"
 
     @staticmethod
     def from_value(value: MetricValueType) -> MetricDataItem:

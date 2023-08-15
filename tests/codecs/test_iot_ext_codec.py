@@ -2,7 +2,8 @@ from decimal import Decimal
 from unittest import TestCase, skip
 
 from src.codecs.iot_ext_codec import IoTextCodec
-from src.types.item_type import Item, ItemTypes, MetricDataItem
+from src.types.item import Item
+from src.types.item_type import ItemTypes, MetricDataItem
 from src.types.metric_data import MetricDataTypes
 
 MSG_1_EXAMPLE = (
@@ -74,8 +75,6 @@ MSG_1_EXAMPLE_AS_DATA_STRUCTS = [
 
 
 class IoTextCodecTest(TestCase):
-    # TODO: verify where is a bug!?
-    @skip
     def test_decode(self):
         expected = MSG_1_EXAMPLE_AS_DATA_STRUCTS
 

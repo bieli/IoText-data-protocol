@@ -31,7 +31,7 @@ class ItemCodec:
     def encode(
         item: Item, split_kind_char: str = "|", split_data_item_char: str = "="
     ) -> str:
-        item_str = f"{item.kind}{split_kind_char}{item.name}"
+        item_str = f"{item.kind.value}{split_kind_char}{item.name}"
         if item.metric is not None:
             item_str += (
                 f"{split_data_item_char}{MetricDataItemCodec.encode(item.metric)}"
