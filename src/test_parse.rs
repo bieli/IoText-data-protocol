@@ -14,9 +14,9 @@ struct MetricDataTypes {}
 
 impl MetricDataTypes {
     const INTEGER: &str = "i";
-    //const BOOL: &str = "b";
+    const BOOL: &str = "b";
     //const DECIMAL: &str = "d";
-    //const TEXT: &str = "t";
+    const TEXT: &str = "t";
 }
 
 
@@ -24,15 +24,15 @@ struct ItemType {}
 impl ItemType {
     const TIME_UNIX_MILIS: &str = "t";
     const DEVICE_ID: &str = "d";
-    //const METRIC: &str = "m";
+    const METRIC: &str = "m";
 }
 
 #[derive(Debug)]
 enum MetricValueType {
     IntegerItemType(i64),
-    //BoolItemType(bool),
+    BoolItemType(bool),
     //DecimalItemType(i64),
-    //TextItemType(String),
+    TextItemType(String),
 }
 
 #[derive(Debug)]
@@ -41,13 +41,10 @@ enum ItemTypeEnum {
     DeviceId(String),
 }
 
-//#![feature(core_intrinsics)]
-//fn print_type_of<T>(_: &T) {
-//    println!("{}", unsafe { std::intrinsics::type_name::<T>() });
-//}
+const MSG_EXAMPLE: &str = "t|3900237526042,d|device_name_001,m|val_water_level1=i:42,m|light_on=b:1,m|bulb_on=b:0,m|msg_machine_01=t:hello";
 
 fn main() {
-    let item_parts: Vec<&str> = "t|3900237526042,d|device_name_001,m|val_water_level1=i:42"
+    let item_parts: Vec<&str> = MSG_EXAMPLE
         .split(',')
         .collect();
 
@@ -67,9 +64,6 @@ fn main() {
             println!("\t\tmetric_parts_values: {:?}", metric_parts_values);
             match metric_parts_values[0] {
                 MetricDataTypes::INTEGER => {
-                    //value: Result<i64, _> = metric_parts_values[0].parse();
-                    //let value: Option<i64> = metric_parts_values[0].parse();
-                    //let value: Result<i64, ParseIntError> = metric_parts_values[0].parse::<i64>();
                     let value = match metric_parts_values[1].parse::<i64>() {
                         Ok(number) => number,
                         Err(_) => todo!(),
@@ -78,7 +72,23 @@ fn main() {
                         "\t\t\tIntegerItemType: {:?}",
                         MetricValueType::IntegerItemType(value)
                     )
-                    //MetricValueType::IntegerItemType(value);
+                }
+                MetricDataTypes::BOOL => {
+                    let value = match metric_parts_values[1] {
+                        "1" => true,
+                        "0" => false, 
+                        _ => todo!(),
+                    };
+                    println!(
+                        "\t\t\tBoolItemType: {:?}",
+                        MetricValueType::BoolItemType(value)
+                    )
+                }
+                MetricDataTypes::TEXT => {
+                    println!(
+                        "\t\t\tBoolItemType: {:?}",
+                        MetricValueType::TextItemType(metric_parts_values[1].to_string())
+                    )
                 }
                 _ => println!("\t\t\tother"),
             }
@@ -95,8 +105,10 @@ fn main() {
                     )
                 }
                 ItemType::DEVICE_ID => {
-                
                     println!("\t\t\tDEVICE_ID: {:?}", ItemTypeEnum::DeviceId(String::from(item_part[1])))
+                }
+                ItemType::METRIC => {
+                    println!("\t\t\tMETRIC: {}", String::from(item_part[1]))
                 }
                 val => {
                     println!("\t\t\t OTHER: {:?}", val);
@@ -136,5 +148,22 @@ item_part: ["m", "val_water_level1=i:42"]
 	metric_parts: ["val_water_level1", "i:42"]
 		metric_parts_values: ["i", "42"]
 			IntegerItemType: IntegerItemType(42)
-
+part: m|light_on=b:1
+item_part: ["m", "light_on=b:1"]
+	metric: light_on=b:1
+	metric_parts: ["light_on", "b:1"]
+		metric_parts_values: ["b", "1"]
+			BoolItemType: BoolItemType(true)
+part: m|bulb_on=b:0
+item_part: ["m", "bulb_on=b:0"]
+	metric: bulb_on=b:0
+	metric_parts: ["bulb_on", "b:0"]
+		metric_parts_values: ["b", "0"]
+			BoolItemType: BoolItemType(false)
+part: m|msg_machine_01=t:hello
+item_part: ["m", "msg_machine_01=t:hello"]
+	metric: msg_machine_01=t:hello
+	metric_parts: ["msg_machine_01", "t:hello"]
+		metric_parts_values: ["t", "hello"]
+			BoolItemType: TextItemType("hello")
 */
