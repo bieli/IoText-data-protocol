@@ -117,3 +117,24 @@ fn main() {
     //println!("{:?}", v);
     //MetricValueType::IntegerItemType(0)
 }
+
+/*
+STDOUT:
+
+
+part: t|3900237526042
+item_part: ["t", "3900237526042"]
+			TIME_UNIX_MILIS: TimeUnixMilis(3900237526042)
+		context: 3900237526042
+part: d|device_name_001
+item_part: ["d", "device_name_001"]
+			DEVICE_ID: DeviceId("device_name_001")
+		context: device_name_001
+part: m|val_water_level1=i:42
+item_part: ["m", "val_water_level1=i:42"]
+	metric: val_water_level1=i:42
+	metric_parts: ["val_water_level1", "i:42"]
+		metric_parts_values: ["i", "42"]
+			IntegerItemType: IntegerItemType(42)
+
+*/
