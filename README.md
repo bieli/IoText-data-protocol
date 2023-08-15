@@ -1,6 +1,5 @@
-.. |codecov| image:: https://codecov.io/gh/bieli/IoText-data-protocol/branch/main/graphs/badge.svg?branch=main
-    :alt: Coverage Status
-    :target: https://codecov.io/github/bieli/IoText-data-protocol
+[![codecov](https://codecov.io/gh/bieli/IoText-data-protocol/branch/main/graph/badge.svg?token=L8FFQNPQXI)](https://codecov.io/gh/bieli/IoText-data-protocol)
+
 
 # IoText-data-protocol
 Internet of Things data protocol - simplistic text and CSV-friendly IoT data protocol. Options: Schema-less, schema+versioning, building deltas for data values. Easy to re-use.
@@ -136,10 +135,14 @@ print("built_msg: ", built_msg)
 assert EXPECTED_MSG == built_msg
 ```
 
+## Code coverage graph
+
+[![codecov-graph](https://codecov.io/gh/bieli/IoText-data-protocol/branch/main/graphs/tree.svg?token=L8FFQNPQXI)](https://codecov.io/gh/bieli/IoText-data-protocol)
+
 ## TODO
- - [ ] FIX bug in add_measure(...) for BOOL type values!?
+ - [x] FIX bug in add_measure(...) for BOOL type values!?
  - [ ] add validator for special chars
- - [ ] update unit tests
+ - [x] update unit tests
  - [ ] add fuzzing tests (discovery limits in values/metrics sizes and check performance issues on SBC devices like RaspberryPi and ESP32)
  - [ ] add limits/max. sizes for device name and metrics names
  - [ ] add CRC16 from MODBUS protocol for serial communication checksum and any terminals usage
