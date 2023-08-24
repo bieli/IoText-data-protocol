@@ -20,7 +20,6 @@ class IoTextItemDataBuilder:
             name=metric_name,
             metric=MetricDataItemCodec.from_value(metric_value),
         )
-        print(item)
         self.metrics.append(item)
 
     def __str__(self, items_separator=",") -> str:

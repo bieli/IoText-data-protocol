@@ -26,7 +26,7 @@ class MetricDataItemCodec:
         if mdi.data_type == MetricDataTypes.INTEGER.value:
             value = str(value)
         elif mdi.data_type == MetricDataTypes.BOOL.value:
-            value = "1" if mdi.value == True else "0"
+            value = "1" if mdi.value == True or mdi.value == "1" else "0"
         elif mdi.data_type == MetricDataTypes.DECIMAL.value:
             value = str(value)
         elif mdi.data_type == MetricDataTypes.TEXT.value:
