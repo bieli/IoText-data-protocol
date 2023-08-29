@@ -2,18 +2,31 @@
 #![allow(clippy::borrow_deref_ref)]
 
 use pyo3::prelude::*;
+use rayon::prelude::*;
 
-/// Formats the sum of two numbers as string.
+/// Searches for the word, parallelized by rayon
 #[pyfunction]
-fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
-    Ok((a + b).to_string())
+fn search(contents: &str, needle: &str) -> usize {
+    contents
+        .par_lines()
+        .map(|line| count_line(line, needle))
+        .sum()
 }
 
-/// A Python module implemented in Rust. The name of this function must match
-/// the `lib.name` setting in the `Cargo.toml`, else Python will not be able to
-/// import the module.
+/// Count the occurrences of needle in line, case insensitive
+fn count_line(line: &str, needle: &str) -> usize {
+    let mut total = 0;
+    for word in line.split(' ') {
+        if word == needle {
+            total += 1;
+        }
+    }
+    total
+}
+
 #[pymodule]
-fn string_sum(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
+fn iotext(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(search, m)?)?;
+ 
     Ok(())
 }
