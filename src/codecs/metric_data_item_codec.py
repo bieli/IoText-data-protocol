@@ -29,7 +29,7 @@ class MetricDataItemCodec:
             MetricDataTypes.INTEGERS_LIST.value,
             MetricDataTypes.DECIMALS_LIST.value,
             MetricDataTypes.BOOLS_LIST.value,
-            MetricDataTypes.TEXTS_LIST.value
+            MetricDataTypes.TEXTS_LIST.value,
         ):
             value = MetricDataItemCodec.from_values_list(data_type, value)
         return MetricDataItem(MetricDataTypes(data_type), value)
@@ -49,7 +49,7 @@ class MetricDataItemCodec:
             MetricDataTypes.INTEGERS_LIST.value,
             MetricDataTypes.DECIMALS_LIST.value,
             MetricDataTypes.BOOLS_LIST.value,
-            MetricDataTypes.TEXTS_LIST.value
+            MetricDataTypes.TEXTS_LIST.value,
         ):
             value = MetricDataItemCodec.to_values_list(mdi.data_type, value)
         return f"{mdi.data_type.value}{data_type_and_value_char}{value}"
@@ -93,7 +93,7 @@ class MetricDataItemCodec:
 
     @staticmethod
     def from_values_list(data_type: MetricDataTypes, value: str) -> MetricValueType:
-        list_of_values = ''
+        list_of_values = ""
         if data_type == MetricDataTypes.INTEGERS_LIST.value:
             values_as_str = re.findall(MetricDataItemCodec.INTEGERS_LIST_REGEXP, value)
             list_of_values = [int(value) for value in values_as_str]

@@ -111,7 +111,7 @@ MSG_WITH_LISTS_EXAMPLE_AS_DATA_STRUCTS = [
         name="texts_list",
         metric=MetricDataItem(
             data_type=MetricDataTypes.TEXTS_LIST,
-            value=['|', ':abc', '!!@', 'xy0z', '1abc,'],
+            value=["|", ":abc", "!!@", "xy0z", "1abc,"],
         ),
     ),
 ]

@@ -153,7 +153,6 @@ class MetricDataItemCodecTest(TestCase):
 
         self.assertEqual(expected, result)
 
-
     def test_base64_restore_padding_with_padding_removed(self):
         expected = "Hello from IoText data protocol"
         # original base64 string has "==" at the end - removed for unit testing
