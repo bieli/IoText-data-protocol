@@ -85,22 +85,34 @@ MSG_WITH_LISTS_EXAMPLE_AS_DATA_STRUCTS = [
     Item(
         kind=ItemTypes.METRIC_ITEM,
         name="ints_list",
-        metric=MetricDataItem(data_type=MetricDataTypes.INTEGERS_LIST, value=[1, -22, 333333]),
+        metric=MetricDataItem(
+            data_type=MetricDataTypes.INTEGERS_LIST,
+            value=[1, -22, 333333],
+        ),
     ),
     Item(
         kind=ItemTypes.METRIC_ITEM,
         name="bools_list",
-        metric=MetricDataItem(data_type=MetricDataTypes.BOOLS_LIST, value=[False, True, True, True]),
+        metric=MetricDataItem(
+            data_type=MetricDataTypes.BOOLS_LIST,
+            value=[False, True, True, True],
+        ),
     ),
     Item(
         kind=ItemTypes.METRIC_ITEM,
         name="decimals_list",
-        metric=MetricDataItem(data_type=MetricDataTypes.DECIMALS_LIST, value=[-123.456, 1234567890.98765, 999.8]),
+        metric=MetricDataItem(
+            data_type=MetricDataTypes.DECIMALS_LIST,
+            value=[-123.456, 1234567890.98765, 999.8],
+        ),
     ),
     Item(
         kind=ItemTypes.METRIC_ITEM,
         name="texts_list",
-        metric=MetricDataItem(data_type=MetricDataTypes.TEXTS_LIST, value=['|', ':abc', '!!@', 'xy0z', '1abc,']),
+        metric=MetricDataItem(
+            data_type=MetricDataTypes.TEXTS_LIST,
+            value=['|', ':abc', '!!@', 'xy0z', '1abc,'],
+        ),
     ),
 ]
 

@@ -9,12 +9,12 @@ from src.types.metric_data_item import MetricDataItem, MetricValueType
 
 
 class MetricDataItemCodec:
-    INTEGERS_LIST_REGEXP = r'([+-][\d]+)'
-    DECIMALS_LIST_REGEXP = r'([+-][\d.]+)'
+    INTEGERS_LIST_REGEXP = r"([+-][\d]+)"
+    DECIMALS_LIST_REGEXP = r"([+-][\d.]+)"
 
     @staticmethod
     def decode(
-            data_type_and_value: str, data_type_and_value_char: str = ":"
+        data_type_and_value: str, data_type_and_value_char: str = ":"
     ) -> MetricDataItem:
         data_type, value = data_type_and_value.split(data_type_and_value_char)
         if data_type == MetricDataTypes.INTEGER.value:
@@ -25,10 +25,12 @@ class MetricDataItemCodec:
             value = Decimal(value)
         elif data_type == MetricDataTypes.TEXT.value:
             value = str(value)
-        elif data_type in (MetricDataTypes.INTEGERS_LIST.value,
-                           MetricDataTypes.DECIMALS_LIST.value,
-                           MetricDataTypes.BOOLS_LIST.value,
-                           MetricDataTypes.TEXTS_LIST.value):
+        elif data_type in (
+            MetricDataTypes.INTEGERS_LIST.value,
+            MetricDataTypes.DECIMALS_LIST.value,
+            MetricDataTypes.BOOLS_LIST.value,
+            MetricDataTypes.TEXTS_LIST.value
+        ):
             value = MetricDataItemCodec.from_values_list(data_type, value)
         return MetricDataItem(MetricDataTypes(data_type), value)
 
@@ -43,10 +45,12 @@ class MetricDataItemCodec:
             value = str(value)
         elif mdi.data_type == MetricDataTypes.TEXT.value:
             value = str(value)
-        elif mdi.data_type in (MetricDataTypes.INTEGERS_LIST.value,
-                               MetricDataTypes.DECIMALS_LIST.value,
-                               MetricDataTypes.BOOLS_LIST.value,
-                               MetricDataTypes.TEXTS_LIST.value):
+        elif mdi.data_type in (
+            MetricDataTypes.INTEGERS_LIST.value,
+            MetricDataTypes.DECIMALS_LIST.value,
+            MetricDataTypes.BOOLS_LIST.value,
+            MetricDataTypes.TEXTS_LIST.value
+        ):
             value = MetricDataItemCodec.to_values_list(mdi.data_type, value)
         return f"{mdi.data_type.value}{data_type_and_value_char}{value}"
 
@@ -69,18 +73,22 @@ class MetricDataItemCodec:
     def to_values_list(data_type: MetricDataTypes, value: MetricValueType) -> str:
         list_of_values = []
         if type(value).__name__ == "list":
-            if data_type == MetricDataTypes.INTEGERS_LIST.value or data_type == MetricDataTypes.DECIMALS_LIST.value:
-                list_of_values = [str(value_item) if value_item < 0 else '+' + str(value_item)
-                                  for value_item in value]
+            if (
+                data_type == MetricDataTypes.INTEGERS_LIST.value
+                or data_type == MetricDataTypes.DECIMALS_LIST.value
+            ):
+                list_of_values = [
+                    str(value_item) if value_item < 0 else "+" + str(value_item)
+                    for value_item in value
+                ]
             elif data_type == MetricDataTypes.BOOLS_LIST.value:
-                list_of_values = ['1' if value_item else '0'
-                                  for value_item in value]
+                list_of_values = ["1" if value_item else "0" for value_item in value]
             elif data_type == MetricDataTypes.TEXTS_LIST.value:
-                ret = base64.b64encode(str(value).encode('utf-8'))
-                removed_padding_equals_from_end = ret.decode('utf-8').rstrip("=")
+                ret = base64.b64encode(str(value).encode("utf-8"))
+                removed_padding_equals_from_end = ret.decode("utf-8").rstrip("=")
                 return removed_padding_equals_from_end
 
-        list_as_str = ''.join(list_of_values)
+        list_as_str = "".join(list_of_values)
         return list_as_str
 
     @staticmethod
@@ -93,20 +101,26 @@ class MetricDataItemCodec:
             values_as_str = re.findall(MetricDataItemCodec.DECIMALS_LIST_REGEXP, value)
             list_of_values = [float(value) for value in values_as_str]
         elif data_type == MetricDataTypes.BOOLS_LIST.value:
-            list_of_values = [True if value_item == '1' else False for value_item in value]
+            list_of_values = [
+                True if value_item == "1" else False for value_item in value
+            ]
         elif data_type == MetricDataTypes.TEXTS_LIST.value:
-            list_of_values = ast.literal_eval(MetricDataItemCodec.base64_restore_padding(value))
+            list_of_values = ast.literal_eval(
+                MetricDataItemCodec.base64_restore_padding(value)
+            )
         return list_of_values
 
     @staticmethod
     def base64_restore_padding(base64_encoded_msg: str) -> str:
-        decoded_msg = ''
+        decoded_msg = ""
         n = 0
         while n < 3:
             try:
-                decoded_msg = base64.b64decode(base64_encoded_msg + "=" * n).decode('utf-8')
+                decoded_msg = base64.b64decode(base64_encoded_msg + "=" * n).decode(
+                    "utf-8"
+                )
             except binascii.Error as err:
-                if 'Incorrect padding' in str(err):
+                if "Incorrect padding" in str(err):
                     pass
                 else:
                     raise Exception(err)

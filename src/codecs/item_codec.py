@@ -24,7 +24,7 @@ class ItemCodec:
                     data_type_and_value, data_type_and_value_char
                 )
             except TypeError as err:
-                raise Exception('ItemCodec.decode error: ' + str(err))
+                raise Exception("ItemCodec.decode error: " + str(err))
         return Item(ItemTypes(kind), name, mdi)
 
     @staticmethod
