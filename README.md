@@ -70,6 +70,10 @@ We have a few basic data types:
 - `d` - decimal (not float!)
 - `b` - boolean
 - `t` - text
+- `I` - list of integers
+- `D` - list of decimals (not float!)
+- `B` - list of booleans
+- `T` - list of texts (base64 encoded with UTF-8, removed and auto-restored padding at the end - conflict with "=" protocol separator)
 
 You can see reference implementation in `MetricDataTypes` class  in `src/types` package.
 
@@ -91,9 +95,41 @@ and after de-serialization to Python data structures we can see:
 [Item(kind='t', name='3900237526042', metric=None), Item(kind='d', name='device_name_001', metric=None), Item(kind='m', name='val_water_001', metric=MetricDataItem(data_type='i', value=1234)), Item(kind='m', name='val_water_002', metric=MetricDataItem(data_type='i', value=15)), Item(kind='m', name='bulb_state', metric=MetricDataItem(data_type='b', value=True)), Item(kind='m', name='connector_state', metric=MetricDataItem(data_type='b', value=False)), Item(kind='m', name='temp_01', metric=MetricDataItem(data_type='d', value=Decimal('34.4'))), Item(kind='m', name='temp_02', metric=MetricDataItem(data_type='d', value=Decimal('36.4'))), Item(kind='m', name='temp_03', metric=MetricDataItem(data_type='d', value=Decimal('10.4'))), Item(kind='m', name='pwr', metric=MetricDataItem(data_type='d', value=Decimal('12.231'))), Item(kind='m', name='current', metric=MetricDataItem(data_type='d', value=Decimal('1.429'))), Item(kind='m', name='current_battery', metric=MetricDataItem(data_type='d', value=Decimal('1.548')))]
 ```
 
+IoText protocol in `schema-less version` data row example with lists values:
+```bash
+t|3900237526142,d|device_name_002,m|ints_list=I:+1-22+333333,m|bools_list=B:0111,m|decimals_list=D:-123.456+1234567890.98765+999.8,m|texts_list=T:Wyd8JywgJzphYmMnLCAnISFAJywgJ3h5MHonLCAnMWFiYywnXQ
+```
+and after de-serialization to Python data structures with lists values we can see:
+```bash
+[
+    Item(kind=ItemTypes.TIMESTAMP_MILIS, name="3900237526142", metric=None),
+    Item(kind=ItemTypes.DEVICE_ID, name="device_name_002", metric=None),
+    Item(
+        kind=ItemTypes.METRIC_ITEM,
+        name="ints_list",
+        metric=MetricDataItem(data_type=MetricDataTypes.INTEGERS_LIST, value=[1, -22, 333333]),
+    ),
+    Item(
+        kind=ItemTypes.METRIC_ITEM,
+        name="bools_list",
+        metric=MetricDataItem(data_type=MetricDataTypes.BOOLS_LIST, value=[False, True, True, True]),
+    ),
+    Item(
+        kind=ItemTypes.METRIC_ITEM,
+        name="decimals_list",
+        metric=MetricDataItem(data_type=MetricDataTypes.DECIMALS_LIST, value=[-123.456, 1234567890.98765, 999.8]),
+    ),
+    Item(
+        kind=ItemTypes.METRIC_ITEM,
+        name="texts_list",
+        metric=MetricDataItem(data_type=MetricDataTypes.TEXTS_LIST, value=['|', ':abc', '!!@', 'xy0z', '1abc,']),
+    ),
+]
+```
+
 #### Preparing message
 You need two required informations:
-- timestamp in UNIX milis
+- timestamp in UNIX millis
 - device name
 - all data metrics are optional, so it means, that you can use IoText protocol like ping - or health check - as well (we have dedicated `h` item type for helth check, too).
 
