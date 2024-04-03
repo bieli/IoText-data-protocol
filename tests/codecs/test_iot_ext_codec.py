@@ -73,6 +73,49 @@ MSG_1_EXAMPLE_AS_DATA_STRUCTS = [
     ),
 ]
 
+MSG_WITH_LISTS_EXAMPLE = (
+    """t|3900237526142,d|device_name_002,m|ints_list=I:+1-22+333333,m|bools_list=B:0111"""
+    """,m|decimals_list=D:-123.456+1234567890.98765+999.8"""
+    """,m|texts_list=T:Wyd8JywgJzphYmMnLCAnISFAJywgJ3h5MHonLCAnMWFiYywnXQ"""
+)
+
+MSG_WITH_LISTS_EXAMPLE_AS_DATA_STRUCTS = [
+    Item(kind=ItemTypes.TIMESTAMP_MILIS, name="3900237526142", metric=None),
+    Item(kind=ItemTypes.DEVICE_ID, name="device_name_002", metric=None),
+    Item(
+        kind=ItemTypes.METRIC_ITEM,
+        name="ints_list",
+        metric=MetricDataItem(
+            data_type=MetricDataTypes.INTEGERS_LIST,
+            value=[1, -22, 333333],
+        ),
+    ),
+    Item(
+        kind=ItemTypes.METRIC_ITEM,
+        name="bools_list",
+        metric=MetricDataItem(
+            data_type=MetricDataTypes.BOOLS_LIST,
+            value=[False, True, True, True],
+        ),
+    ),
+    Item(
+        kind=ItemTypes.METRIC_ITEM,
+        name="decimals_list",
+        metric=MetricDataItem(
+            data_type=MetricDataTypes.DECIMALS_LIST,
+            value=[-123.456, 1234567890.98765, 999.8],
+        ),
+    ),
+    Item(
+        kind=ItemTypes.METRIC_ITEM,
+        name="texts_list",
+        metric=MetricDataItem(
+            data_type=MetricDataTypes.TEXTS_LIST,
+            value=["|", ":abc", "!!@", "xy0z", "1abc,"],
+        ),
+    ),
+]
+
 
 class IoTextCodecTest(TestCase):
     def test_decode(self):
@@ -87,5 +130,21 @@ class IoTextCodecTest(TestCase):
         iotext_msg = MSG_1_EXAMPLE_AS_DATA_STRUCTS
 
         result = IoTextCodec.encode(iotext_msg)
+
+        self.assertEqual(expected, result)
+
+    def test_lists_encode(self):
+        expected = MSG_WITH_LISTS_EXAMPLE
+        iotext_list_msg = MSG_WITH_LISTS_EXAMPLE_AS_DATA_STRUCTS
+
+        result = IoTextCodec.encode(iotext_list_msg)
+
+        self.assertEqual(expected, result)
+
+    def test_lists_decode(self):
+        expected = MSG_WITH_LISTS_EXAMPLE_AS_DATA_STRUCTS
+        iotext_list_msg = MSG_WITH_LISTS_EXAMPLE
+
+        result = IoTextCodec.decode(iotext_list_msg)
 
         self.assertEqual(expected, result)

@@ -6,3 +6,7 @@ class MetricDataTypes(str, Enum):
     BOOL = "b"
     DECIMAL = "d"
     TEXT = "t"
+    INTEGERS_LIST = "I"
+    BOOLS_LIST = "B"
+    DECIMALS_LIST = "D"
+    TEXTS_LIST = "T"
