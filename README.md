@@ -60,7 +60,8 @@ We have a few basic item types:
 - `t` - timestamp UNIX milis item
 - `d` - device name item
 - `m` - metric item
-- `h` - helth check
+- `h` - health check
+- `c` - CRC-16 (from MODBUS control sum) for all combined IoText payload as string
 
 You can see reference implementation in `ItemTypes` class  in `src/types` package. 
 
@@ -85,15 +86,39 @@ We have a few basic data codecs:
 
 You can see reference implementation in `src/codecs` package.
 
+### How to prepare IoText message
+You need two required informations:
+- timestamp in UNIX millis
+- device name
+- all data metrics are optional, so it means, that you can use IoText protocol like ping - or health check - as well (we have dedicated `h` item type for helth check, too).
+- CRC item it's optional sum control method (using CRC-16 MODBUS implementation)
+
 ### Examples
+
+#### IoText message with generic values
+
 IoText protocol in `schema-less version` data row example:
 ```bash
 t|3900237526042,d|device_name_001,m|val_water_001=i:1234,m|val_water_002=i:15,m|bulb_state=b:1,m|connector_state=b:0,m|temp_01=d:34.4,m|temp_02=d:36.4,m|temp_03=d:10.4,m|pwr=d:12.231,m|current=d:1.429,m|current_battery=d:1.548
 ```
 and after de-serialization to Python data structures we can see:
 ```bash
-[Item(kind='t', name='3900237526042', metric=None), Item(kind='d', name='device_name_001', metric=None), Item(kind='m', name='val_water_001', metric=MetricDataItem(data_type='i', value=1234)), Item(kind='m', name='val_water_002', metric=MetricDataItem(data_type='i', value=15)), Item(kind='m', name='bulb_state', metric=MetricDataItem(data_type='b', value=True)), Item(kind='m', name='connector_state', metric=MetricDataItem(data_type='b', value=False)), Item(kind='m', name='temp_01', metric=MetricDataItem(data_type='d', value=Decimal('34.4'))), Item(kind='m', name='temp_02', metric=MetricDataItem(data_type='d', value=Decimal('36.4'))), Item(kind='m', name='temp_03', metric=MetricDataItem(data_type='d', value=Decimal('10.4'))), Item(kind='m', name='pwr', metric=MetricDataItem(data_type='d', value=Decimal('12.231'))), Item(kind='m', name='current', metric=MetricDataItem(data_type='d', value=Decimal('1.429'))), Item(kind='m', name='current_battery', metric=MetricDataItem(data_type='d', value=Decimal('1.548')))]
+[
+  Item(kind='t', name='3900237526042', metric=None),
+  Item(kind='d', name='device_name_001', metric=None),
+  Item(kind='m', name='val_water_001', metric=MetricDataItem(data_type='i', value=1234)),
+  Item(kind='m', name='val_water_002', metric=MetricDataItem(data_type='i', value=15)),
+  Item(kind='m', name='bulb_state', metric=MetricDataItem(data_type='b', value=True)),
+  Item(kind='m', name='connector_state', metric=MetricDataItem(data_type='b', value=False)),
+  Item(kind='m', name='temp_01', metric=MetricDataItem(data_type='d', value=Decimal('34.4'))),
+  Item(kind='m', name='temp_02', metric=MetricDataItem(data_type='d', value=Decimal('36.4'))),
+  Item(kind='m', name='temp_03', metric=MetricDataItem(data_type='d', value=Decimal('10.4'))),
+  Item(kind='m', name='pwr', metric=MetricDataItem(data_type='d', value=Decimal('12.231'))),
+  Item(kind='m', name='current', metric=MetricDataItem(data_type='d', value=Decimal('1.429'))),
+  Item(kind='m', name='current_battery', metric=MetricDataItem(data_type='d', value=Decimal('1.548')))]
 ```
+
+#### IoText message with lists of values
 
 IoText protocol in `schema-less version` data row example with lists values:
 ```bash
@@ -127,11 +152,29 @@ and after de-serialization to Python data structures with lists values we can se
 ]
 ```
 
-#### Preparing message
-You need two required informations:
-- timestamp in UNIX millis
-- device name
-- all data metrics are optional, so it means, that you can use IoText protocol like ping - or health check - as well (we have dedicated `h` item type for helth check, too).
+#### IoText message with CRC16 sum control item
+
+IoText protocol in `schema-less version` data row example:
+```bash
+t|123123123123,d|device_one,m|value=d:123.321,c|4C5A
+```
+and after de-serialization to Python data structures we can see:
+```bash
+[
+    Item(kind=ItemTypes.TIMESTAMP_MILIS, name="123123123123", metric=None),
+    Item(kind=ItemTypes.DEVICE_ID, name="device_one", metric=None),
+    Item(
+        kind=ItemTypes.METRIC_ITEM,
+        name="value",
+        metric=MetricDataItem(data_type=MetricDataTypes.DECIMAL, value=Decimal('123.321')),
+    ),
+    Item(
+        kind=ItemTypes.CRC,
+        name="4C5A",
+        metric=None
+    )
+]
+```
 
 
 ## How to use this library?

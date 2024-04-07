@@ -1,3 +1,5 @@
+test:
+	pytest tests/
 ci:
 	black src/
 	black tests/

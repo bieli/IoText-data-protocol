@@ -9,3 +9,4 @@ class ItemTypes(str, Enum):
     DEVICE_ID = "d"
     METRIC_ITEM = "m"
     HEALTH_CHECK = "h"
+    CRC = "c"
