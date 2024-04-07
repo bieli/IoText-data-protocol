@@ -116,6 +116,21 @@ MSG_WITH_LISTS_EXAMPLE_AS_DATA_STRUCTS = [
     ),
 ]
 
+MSG_EXAMPLE_WITH_CRC = """t|123123123123,d|device_one,m|value=d:123.321,c|70AA"""
+
+MSG_EXAMPLE_WITH_CRC_AS_DATA_STRUCTS = [
+    Item(kind=ItemTypes.TIMESTAMP_MILIS, name="123123123123", metric=None),
+    Item(kind=ItemTypes.DEVICE_ID, name="device_one", metric=None),
+    Item(
+        kind=ItemTypes.METRIC_ITEM,
+        name="value",
+        metric=MetricDataItem(
+            data_type=MetricDataTypes.DECIMAL, value=Decimal("123.321")
+        ),
+    ),
+    Item(kind=ItemTypes.CRC, name="70AA", metric=None),
+]
+
 
 class IoTextCodecTest(TestCase):
     def test_decode(self):
@@ -147,4 +162,10 @@ class IoTextCodecTest(TestCase):
 
         result = IoTextCodec.decode(iotext_list_msg)
 
+        self.assertEqual(expected, result)
+
+    def test_decode_msg_with_crc(self):
+        expected = MSG_EXAMPLE_WITH_CRC_AS_DATA_STRUCTS
+
+        result = IoTextCodec.decode(MSG_EXAMPLE_WITH_CRC)
         self.assertEqual(expected, result)
