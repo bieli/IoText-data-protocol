@@ -69,8 +69,6 @@ class MetricDataItemCodec:
                 data_type = MetricDataTypes.DECIMAL
             elif isinstance(value, str):
                 data_type = MetricDataTypes.TEXT
-            else:
-                data_type = MetricDataTypes.TEXT
         elif metric_data_type in (
             MetricDataTypes.INTEGERS_LIST,
             MetricDataTypes.DECIMALS_LIST,
