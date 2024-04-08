@@ -57,6 +57,12 @@ class MetricDataItemCodecTest(TestCase):
 
         self.assertEqual(expected, result)
 
+    def test_should_not_from_value_when_metric_data_type_is_wrong(self):
+        wrong_metric_data_type = "Z"
+
+        with self.assertRaises(ValueError):
+            MetricDataItemCodec.from_value("", wrong_metric_data_type)
+
     def test_to_values_list_type_integers_list(self):
         list_of_ints = [0, -123, 555, -99999999]
         expected = "+0-123+555-99999999"
@@ -161,3 +167,9 @@ class MetricDataItemCodecTest(TestCase):
         result = MetricDataItemCodec.base64_restore_padding(input_str)
 
         self.assertEqual(expected, result)
+
+    def test_shoud_not_base64_restore_padding_with_wrong_value(self):
+        wrong_input_str = "X"
+
+        with self.assertRaises(ValueError):
+            MetricDataItemCodec.base64_restore_padding(wrong_input_str)

@@ -176,6 +176,62 @@ and after de-serialization to Python data structures we can see:
 ]
 ```
 
+#### IoText message to/from JSON format (for backward compatibility with other APIs and subsystems)
+
+You can use below methods from IoText Python API:
+- `iotext_data_struct = IoTextItemDataBuilder.from_json(iotext_msg_as_json)`
+- `builder = IoTextItemDataBuilder(...)`
+  - `builder.add_measure(...)`
+  - `builder.to_json()`
+
+IoText message as JSON row example:
+```bash
+[{"t": "3900237526042"}, {"d": "DEV_NAME_002"}, {"m": "battery_level", "v": 12.07, "t": "d"}, {"m": "open_door", "v": "1", "t": "b"}, {"m": "open_window", "v": "0", "t": "b"}, {"m": "counter_01", "v": 1234, "t": "i"}, {"m": "ints_list", "v": "-12+13-14", "t": "I"}, {"c": "9838"}]
+```
+and after de-serialization from JSON format to IoText's Python data structure:
+```bash
+[
+            Item(kind=ItemTypes.TIMESTAMP_MILIS, name="3900237526042", metric=None),
+            Item(kind=ItemTypes.DEVICE_ID, name="DEV_NAME_002", metric=None),
+            Item(
+                kind=ItemTypes.METRIC_ITEM,
+                name="battery_level",
+                metric=MetricDataItem(
+                    data_type=MetricDataTypes.DECIMAL,
+                    value=Decimal("12.07"),
+                ),
+            ),
+            Item(
+                kind=ItemTypes.METRIC_ITEM,
+                name="open_door",
+                metric=MetricDataItem(data_type=MetricDataTypes.BOOL, value=True),
+            ),
+            Item(
+                kind=ItemTypes.METRIC_ITEM,
+                name="open_window",
+                metric=MetricDataItem(data_type=MetricDataTypes.BOOL, value=False),
+            ),
+            Item(
+                kind=ItemTypes.METRIC_ITEM,
+                name="counter_01",
+                metric=MetricDataItem(data_type=MetricDataTypes.INTEGER, value=1234),
+            ),
+            Item(
+                kind=ItemTypes.METRIC_ITEM,
+                name="ints_list",
+                metric=MetricDataItem(
+                    data_type=MetricDataTypes.INTEGERS_LIST,
+                    value=[-12, 13, -14],
+                ),
+            ),
+            Item(
+                kind=ItemTypes.CRC,
+                name="9838",
+                metric=None,
+            ),
+        ]
+```
+
 
 ## How to use this library?
 
@@ -220,14 +276,13 @@ assert EXPECTED_MSG == built_msg
 
 ## TODO
  - [x] FIX bug in add_measure(...) for BOOL type values!?
- - [ ] add validator for special chars
+ - [x] add CRC16 from MODBUS protocol for serial communication checksum and any terminals usage
+ - [x] add CI/CD pipeline on github based on Github Actions
  - [x] update unit tests
+ - [ ] add validator for special chars
  - [ ] add fuzzing tests (discovery limits in values/metrics sizes and check performance issues on SBC devices like RaspberryPi and ESP32)
  - [ ] add limits/max. sizes for device name and metrics names
- - [ ] add CRC16 from MODBUS protocol for serial communication checksum and any terminals usage
- - [ ] add CI/CD pipeline on github based on Github Actions
  - [ ] add setup.py file and publish package for PIP + release on github
  - [ ] add schema versioning, no need to repeat metrics names in all message (one schema in particular version can solve names by indexes in data protocol). More optimal version of protocol.
- - [ ] add definition and examples of delta data sending (it's possibe in schema-less version as well, but maybe it will be good to have implementaion for that required in IoT systems typical optimisation scenario)
+ - [ ] add definition and examples of delta data sending (it's possible in schema-less version as well, but maybe it will be good to have implementation for that required in IoT systems typical optimisation scenario)
  - [ ] examples, how encapsulate `IoText data protocol` on top od `MQTT IoT protocol`
- 

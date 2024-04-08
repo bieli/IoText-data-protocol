@@ -3,6 +3,7 @@ import base64
 import binascii
 import re
 from decimal import Decimal
+from typing import Optional
 
 from src.types.metric_data import MetricDataTypes
 from src.types.metric_data_item import MetricDataItem, MetricValueType
@@ -55,18 +56,31 @@ class MetricDataItemCodec:
         return f"{mdi.data_type.value}{data_type_and_value_char}{value}"
 
     @staticmethod
-    def from_value(value: MetricValueType) -> MetricDataItem:
-        if type(value).__name__ == "int":
-            data_type = MetricDataTypes.INTEGER
-        elif type(value).__name__ == "bool":
-            data_type = MetricDataTypes.BOOL
-            value = "1" if value == True else "0"
-        elif isinstance(value, Decimal) or isinstance(value, float):
-            data_type = MetricDataTypes.DECIMAL
-        elif isinstance(value, str):
-            data_type = MetricDataTypes.TEXT
+    def from_value(
+        value: MetricValueType, metric_data_type: Optional[MetricDataTypes] = None
+    ) -> MetricDataItem:
+        if metric_data_type is None:
+            if type(value).__name__ == "int":
+                data_type = MetricDataTypes.INTEGER
+            elif type(value).__name__ == "bool":
+                data_type = MetricDataTypes.BOOL
+                value = "1" if value == True else "0"
+            elif isinstance(value, Decimal) or isinstance(value, float):
+                data_type = MetricDataTypes.DECIMAL
+            elif isinstance(value, str):
+                data_type = MetricDataTypes.TEXT
+        elif metric_data_type in (
+            MetricDataTypes.INTEGERS_LIST,
+            MetricDataTypes.DECIMALS_LIST,
+            MetricDataTypes.BOOLS_LIST,
+            MetricDataTypes.TEXTS_LIST,
+        ):
+            data_type = metric_data_type
+            value = MetricDataItemCodec.from_values_list(
+                data_type, MetricDataItemCodec.to_values_list(metric_data_type, value)
+            )
         else:
-            data_type = MetricDataTypes.TEXT
+            raise ValueError("Wrong data type selected!")
         return MetricDataItem(data_type, value)
 
     @staticmethod
@@ -123,6 +137,6 @@ class MetricDataItemCodec:
                 if "Incorrect padding" in str(err):
                     pass
                 else:
-                    raise Exception(err)
+                    raise ValueError(err)
             n += 1
         return decoded_msg
