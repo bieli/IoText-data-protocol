@@ -69,12 +69,14 @@ class MetricDataItemCodec:
                 data_type = MetricDataTypes.DECIMAL
             elif isinstance(value, str):
                 data_type = MetricDataTypes.TEXT
-            elif isinstance(value, list):
-                data_type = MetricDataTypes.TEXT
-                value = MetricDataItemCodec.to_values_list(mdi.data_type, value)
             else:
                 data_type = MetricDataTypes.TEXT
-        elif metric_data_type is not None:
+        elif metric_data_type in (
+            MetricDataTypes.INTEGERS_LIST,
+            MetricDataTypes.DECIMALS_LIST,
+            MetricDataTypes.BOOLS_LIST,
+            MetricDataTypes.TEXTS_LIST,
+        ):
             data_type = metric_data_type
             value = MetricDataItemCodec.from_values_list(
                 data_type, MetricDataItemCodec.to_values_list(metric_data_type, value)
@@ -137,6 +139,6 @@ class MetricDataItemCodec:
                 if "Incorrect padding" in str(err):
                     pass
                 else:
-                    raise Exception(err)
+                    raise ValueError(err)
             n += 1
         return decoded_msg

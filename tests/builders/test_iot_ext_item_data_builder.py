@@ -153,3 +153,91 @@ class IoTextItemDataBuilderTest(TestCase):
         iotext_msg_as_data_struct = IoTextItemDataBuilder.from_json(iotext_msg_as_json)
 
         self.assertEqual(iotext_msg_as_data_struct, expected_struct)
+
+    def test_should_not_convert_from_json_with_wrong_item_type(self):
+        unknown_item_type = "X"
+        iotext_msg_as_json = '[{"' + unknown_item_type + '": "xyz"}]'
+
+        with self.assertRaises(ValueError):
+            IoTextItemDataBuilder.from_json(iotext_msg_as_json)
+
+    def test_should_not_convert_from_json_with_wrong_data_type_in_metric(self):
+        unknown_data_type_in_metric = "Z"
+        iotext_msg_as_json = (
+            '[{"t": "3900237526042"}, {"d": "DEV_NAME_002"}, {"m": "var", "v": 12.07, "t": "'
+            + unknown_data_type_in_metric
+            + '"}]'
+        )
+
+        with self.assertRaises(ValueError):
+            IoTextItemDataBuilder.from_json(iotext_msg_as_json)
+
+    @parameterized.expand(
+        [
+            (
+                '[{"t": "123123123"}, {"d": "D1"}, {"m": "v1", "v": "txt", "t": "t"}]',
+                [
+                    Item(kind=ItemTypes.TIMESTAMP_MILIS, name="123123123", metric=None),
+                    Item(kind=ItemTypes.DEVICE_ID, name="D1", metric=None),
+                    Item(
+                        kind=ItemTypes.METRIC_ITEM,
+                        name="v1",
+                        metric=MetricDataItem(
+                            data_type=MetricDataTypes.TEXT,
+                            value="txt",
+                        ),
+                    ),
+                ],
+            ),
+            (
+                '[{"t": "123123123"}, {"d": "D1"}, {"m": "v1", "v": "-2+3-1", "t": "D"}]',
+                [
+                    Item(kind=ItemTypes.TIMESTAMP_MILIS, name="123123123", metric=None),
+                    Item(kind=ItemTypes.DEVICE_ID, name="D1", metric=None),
+                    Item(
+                        kind=ItemTypes.METRIC_ITEM,
+                        name="v1",
+                        metric=MetricDataItem(
+                            data_type=MetricDataTypes.DECIMALS_LIST,
+                            value="-2+3-1",
+                        ),
+                    ),
+                ],
+            ),
+            (
+                '[{"t": "123123123"}, {"d": "D1"}, {"m": "v1", "v": "10010", "t": "B"}]',
+                [
+                    Item(kind=ItemTypes.TIMESTAMP_MILIS, name="123123123", metric=None),
+                    Item(kind=ItemTypes.DEVICE_ID, name="D1", metric=None),
+                    Item(
+                        kind=ItemTypes.METRIC_ITEM,
+                        name="v1",
+                        metric=MetricDataItem(
+                            data_type=MetricDataTypes.BOOLS_LIST,
+                            value="10010",
+                        ),
+                    ),
+                ],
+            ),
+            # (
+            #     '[{"t": "123123123"}, {"d": "D1"}, {"m": "v1", "v": ["a", "b", "c"], "t": "T"}]',
+            #     [
+            #         Item(kind=ItemTypes.TIMESTAMP_MILIS, name="123123123", metric=None),
+            #         Item(kind=ItemTypes.DEVICE_ID, name="D1", metric=None),
+            #         Item(
+            #             kind=ItemTypes.METRIC_ITEM,
+            #             name="v1",
+            #             metric=MetricDataItem(
+            #                 data_type=MetricDataTypes.TEXTS_LIST,
+            #                 value="YWJjCg",
+            #             ),
+            #         ),
+            #     ],
+            # ),
+        ]
+    )
+    def test_should_convert_from_json_with_data_type_in_metric(
+        self, iotext_msg_as_json, expected_result
+    ):
+        result = IoTextItemDataBuilder.from_json(iotext_msg_as_json)
+        self.assertTrue(result, expected_result)
