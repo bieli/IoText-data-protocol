@@ -276,14 +276,13 @@ assert EXPECTED_MSG == built_msg
 
 ## TODO
  - [x] FIX bug in add_measure(...) for BOOL type values!?
- - [ ] add validator for special chars
+ - [x] add CRC16 from MODBUS protocol for serial communication checksum and any terminals usage
+ - [x] add CI/CD pipeline on github based on Github Actions
  - [x] update unit tests
+ - [ ] add validator for special chars
  - [ ] add fuzzing tests (discovery limits in values/metrics sizes and check performance issues on SBC devices like RaspberryPi and ESP32)
  - [ ] add limits/max. sizes for device name and metrics names
- - [ ] add CRC16 from MODBUS protocol for serial communication checksum and any terminals usage
- - [ ] add CI/CD pipeline on github based on Github Actions
  - [ ] add setup.py file and publish package for PIP + release on github
  - [ ] add schema versioning, no need to repeat metrics names in all message (one schema in particular version can solve names by indexes in data protocol). More optimal version of protocol.
- - [ ] add definition and examples of delta data sending (it's possibe in schema-less version as well, but maybe it will be good to have implementaion for that required in IoT systems typical optimisation scenario)
+ - [ ] add definition and examples of delta data sending (it's possible in schema-less version as well, but maybe it will be good to have implementation for that required in IoT systems typical optimisation scenario)
  - [ ] examples, how encapsulate `IoText data protocol` on top od `MQTT IoT protocol`
- 
