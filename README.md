@@ -176,6 +176,62 @@ and after de-serialization to Python data structures we can see:
 ]
 ```
 
+#### IoText message to/from JSON format (for backward compatibility with other APIs and subsystems)
+
+You can use below methods from IoText Python API:
+- `iotext_data_struct = IoTextItemDataBuilder.from_json(iotext_msg_as_json)`
+- `builder = IoTextItemDataBuilder(...)`
+  - `builder.add_measure(...)`
+  - `builder.to_json()`
+
+IoText message as JSON row example:
+```bash
+[{"t": "3900237526042"}, {"d": "DEV_NAME_002"}, {"m": "battery_level", "v": 12.07, "t": "d"}, {"m": "open_door", "v": "1", "t": "b"}, {"m": "open_window", "v": "0", "t": "b"}, {"m": "counter_01", "v": 1234, "t": "i"}, {"m": "ints_list", "v": "-12+13-14", "t": "I"}, {"c": "9838"}]
+```
+and after de-serialization from JSON format to IoText's Python data structure:
+```bash
+[
+            Item(kind=ItemTypes.TIMESTAMP_MILIS, name="3900237526042", metric=None),
+            Item(kind=ItemTypes.DEVICE_ID, name="DEV_NAME_002", metric=None),
+            Item(
+                kind=ItemTypes.METRIC_ITEM,
+                name="battery_level",
+                metric=MetricDataItem(
+                    data_type=MetricDataTypes.DECIMAL,
+                    value=Decimal("12.07"),
+                ),
+            ),
+            Item(
+                kind=ItemTypes.METRIC_ITEM,
+                name="open_door",
+                metric=MetricDataItem(data_type=MetricDataTypes.BOOL, value=True),
+            ),
+            Item(
+                kind=ItemTypes.METRIC_ITEM,
+                name="open_window",
+                metric=MetricDataItem(data_type=MetricDataTypes.BOOL, value=False),
+            ),
+            Item(
+                kind=ItemTypes.METRIC_ITEM,
+                name="counter_01",
+                metric=MetricDataItem(data_type=MetricDataTypes.INTEGER, value=1234),
+            ),
+            Item(
+                kind=ItemTypes.METRIC_ITEM,
+                name="ints_list",
+                metric=MetricDataItem(
+                    data_type=MetricDataTypes.INTEGERS_LIST,
+                    value=[-12, 13, -14],
+                ),
+            ),
+            Item(
+                kind=ItemTypes.CRC,
+                name="9838",
+                metric=None,
+            ),
+        ]
+```
+
 
 ## How to use this library?
 
