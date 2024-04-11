@@ -267,3 +267,16 @@ class IoTextItemDataBuilderTest(TestCase):
         result = IoTextItemDataBuilder.iotext_to_json_named_metrics(iotext_example)
 
         self.assertEqual(result, expected_json)
+
+    def test_should_iotext_to_json_one_object(self):
+        expected_json = """{"t": "1712829010000", "d": "DEV_NAME_003", "xb": false, "xds": [-547, -542, -553, -540, -542, -522, -539, -522, -549, -539, -542, -556, -539, -555, -529, -561, -548, -567, -532, -554, -540, -521, -568, -541, -542], "battery_lvl": 81}"""
+
+        iotext_example = (
+            "t|1712829010000,d|DEV_NAME_003,m|xb=b:0,"
+            "m|xds=I:-547-542-553-540-542-522-539-522-549-539-542-556-539-555"
+            "-529-561-548-567-532-554-540-521-568-541-542,m|battery_lvl=i:81"
+        )
+
+        result = IoTextItemDataBuilder.iotext_to_json_one_object(iotext_example)
+
+        self.assertEqual(result, expected_json)
