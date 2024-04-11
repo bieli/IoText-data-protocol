@@ -71,6 +71,18 @@ class IoTextItemDataBuilder:
         )
 
     @staticmethod
+    def iotext_to_json_one_object(iotext_msg) -> str:
+        iotext_msg_struct = IoTextCodec.decode(iotext_msg)
+        data_row = {}
+        for item in iotext_msg_struct:
+            if item.metric is not None:
+                data_row[item.name] = item.metric.value
+            else:
+                data_row[item.kind] = item.name
+            data_row.update(data_row)
+        return json.dumps(data_row)
+
+    @staticmethod
     def to_json_from_iotext_struct(
         iotext_msg_struct, is_named_metric: bool = False
     ) -> str:
