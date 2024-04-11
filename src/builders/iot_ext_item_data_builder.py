@@ -1,7 +1,8 @@
 import json
 from decimal import Decimal
-from typing import List, Union, Optional
+from typing import List, Optional
 
+from src.codecs.iot_ext_codec import IoTextCodec
 from src.codecs.item_codec import ItemCodec
 from src.codecs.metric_data_item_codec import MetricDataItemCodec
 from src.tools.crc16 import Tools
@@ -51,8 +52,17 @@ class IoTextItemDataBuilder:
 
     def to_json(self) -> str:
         self.__str__()
+        return IoTextItemDataBuilder.to_json_from_iotext_struct(self.output)
+
+    @staticmethod
+    def iotext_to_json(iotext_msg) -> str:
+        iotext_msg_struct = IoTextCodec.decode(iotext_msg)
+        return IoTextItemDataBuilder.to_json_from_iotext_struct(iotext_msg_struct)
+
+    @staticmethod
+    def to_json_from_iotext_struct(iotext_msg_struct):
         data_row = []
-        for item in self.output:
+        for item in iotext_msg_struct:
             data_item = {
                 item.kind: item.name,
             }
