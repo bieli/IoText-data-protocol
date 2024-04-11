@@ -55,25 +55,44 @@ class IoTextItemDataBuilder:
         return IoTextItemDataBuilder.to_json_from_iotext_struct(self.output)
 
     @staticmethod
-    def iotext_to_json(iotext_msg) -> str:
+    def iotext_to_json(
+        iotext_msg,
+    ) -> str:
         iotext_msg_struct = IoTextCodec.decode(iotext_msg)
-        return IoTextItemDataBuilder.to_json_from_iotext_struct(iotext_msg_struct)
+        return IoTextItemDataBuilder.to_json_from_iotext_struct(
+            iotext_msg_struct, is_named_metric=False
+        )
 
     @staticmethod
-    def to_json_from_iotext_struct(iotext_msg_struct):
+    def iotext_to_json_named_metrics(iotext_msg) -> str:
+        iotext_msg_struct = IoTextCodec.decode(iotext_msg)
+        return IoTextItemDataBuilder.to_json_from_iotext_struct(
+            iotext_msg_struct, is_named_metric=True
+        )
+
+    @staticmethod
+    def to_json_from_iotext_struct(
+        iotext_msg_struct, is_named_metric: bool = False
+    ) -> str:
         data_row = []
         for item in iotext_msg_struct:
             data_item = {
                 item.kind: item.name,
             }
             if item.metric is not None:
-                val = {"v": item.metric.value, "t": item.metric.data_type}
-                data_item.update(val)
+                if is_named_metric:
+                    data_item = {
+                        item.name: item.metric.value,
+                        "t": item.metric.data_type,
+                    }
+                else:
+                    val = {"v": item.metric.value, "t": item.metric.data_type}
+                    data_item.update(val)
             data_row.append(data_item)
         return json.dumps(data_row)
 
     @staticmethod
-    def from_json(json_iotext_msg) -> str:
+    def from_json(json_iotext_msg) -> List[Item]:
         data_row_from_json = json.loads(json_iotext_msg)
         items = []
         for item in data_row_from_json:
