@@ -199,7 +199,7 @@ class IoTextItemDataBuilderTest(TestCase):
                         name="v1",
                         metric=MetricDataItem(
                             data_type=MetricDataTypes.DECIMALS_LIST,
-                            value="-2+3-1",
+                            value=[-2.0, 3.0, -1.0],
                         ),
                     ),
                 ],
@@ -214,13 +214,13 @@ class IoTextItemDataBuilderTest(TestCase):
                         name="v1",
                         metric=MetricDataItem(
                             data_type=MetricDataTypes.BOOLS_LIST,
-                            value="10010",
+                            value=[True, False, False, True, False],
                         ),
                     ),
                 ],
             ),
             # (
-            #     '[{"t": "123123123"}, {"d": "D1"}, {"m": "v1", "v": ["a", "b", "c"], "t": "T"}]',
+            #     '[{"t": "123123123"}, {"d": "D1"}, {"m": "v1", "v": "YWJjCg", "t": "T"}]',
             #     [
             #         Item(kind=ItemTypes.TIMESTAMP_MILIS, name="123123123", metric=None),
             #         Item(kind=ItemTypes.DEVICE_ID, name="D1", metric=None),
@@ -229,7 +229,7 @@ class IoTextItemDataBuilderTest(TestCase):
             #             name="v1",
             #             metric=MetricDataItem(
             #                 data_type=MetricDataTypes.TEXTS_LIST,
-            #                 value="YWJjCg",
+            #                 value=["a", "b", "c"],
             #             ),
             #         ),
             #     ],
@@ -240,4 +240,17 @@ class IoTextItemDataBuilderTest(TestCase):
         self, iotext_msg_as_json, expected_result
     ):
         result = IoTextItemDataBuilder.from_json(iotext_msg_as_json)
-        self.assertTrue(result, expected_result)
+        self.assertEqual(result, expected_result)
+
+    def test_should_iotext_to_json(self):
+        expected_json = """[{"t": "1712829010000"}, {"d": "DEV_NAME_003"}, {"m": "xb", "v": false, "t": "b"}, {"m": "xds", "v": [-547, -542, -553, -540, -542, -522, -539, -522, -549, -539, -542, -556, -539, -555, -529, -561, -548, -567, -532, -554, -540, -521, -568, -541, -542], "t": "I"}, {"m": "battery_lvl", "v": 81, "t": "i"}]"""
+
+        iotext_example = (
+            "t|1712829010000,d|DEV_NAME_003,m|xb=b:0,"
+            "m|xds=I:-547-542-553-540-542-522-539-522-549-539-542-556-539-555"
+            "-529-561-548-567-532-554-540-521-568-541-542,m|battery_lvl=i:81"
+        )
+
+        result = IoTextItemDataBuilder.iotext_to_json(iotext_example)
+
+        self.assertEqual(result, expected_json)
