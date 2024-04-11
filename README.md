@@ -270,6 +270,22 @@ print("built_msg: ", built_msg)
 assert EXPECTED_MSG == built_msg
 ```
 
+## How to install library
+```bash
+$ pip install git+https://github.com/bieli/IoText-data-protocol@main#egg=IoText-data-protocol
+
+## test in REPL
+$ python3
+Python 3.8.10 (default, Nov 22 2023, 10:22:35)
+...
+>>> from src.builders.iot_ext_item_data_builder import IoTextItemDataBuilder
+>>> b = IoTextItemDataBuilder(123, 'D1')
+>>> b
+<src.builders.iot_ext_item_data_builder.IoTextItemDataBuilder object at 0x7f9ebbc1d550>
+>>> str(b)
+'t|123,d|D1'
+```
+
 ## Code coverage graph
 
 [![codecov-graph](https://codecov.io/gh/bieli/IoText-data-protocol/branch/main/graphs/tree.svg?token=L8FFQNPQXI)](https://codecov.io/gh/bieli/IoText-data-protocol)
