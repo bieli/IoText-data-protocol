@@ -1,4 +1,5 @@
 import json
+import decimal
 from decimal import Decimal
 from typing import List, Optional
 
@@ -10,6 +11,21 @@ from src.types.item import Item
 from src.types.item_type import ItemTypes
 from src.types.metric_data import MetricDataTypes
 from src.types.metric_data_item import MetricValueType, MetricDataItem
+
+
+class fakefloat(float):
+    def __init__(self, value):
+        self._value = value
+
+    def __repr__(self):
+        return str(self._value)
+
+
+def defaultencode(o):
+    if isinstance(o, Decimal):
+        # Subclass float with custom repr?
+        return fakefloat(o)
+    raise TypeError(repr(o) + " is not JSON serializable")
 
 
 class IoTextItemDataBuilder:
@@ -80,7 +96,7 @@ class IoTextItemDataBuilder:
             else:
                 data_row[item.kind] = item.name
             data_row.update(data_row)
-        return json.dumps(data_row)
+        return json.dumps(data_row, default=defaultencode)
 
     @staticmethod
     def to_json_from_iotext_struct(
