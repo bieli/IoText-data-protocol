@@ -16,6 +16,7 @@ from src.types.metric_data_item import MetricValueType, MetricDataItem
 class fakefloat(float):
     def __init__(self, value):
         self._value = value
+
     def __repr__(self):
         return str(self._value)
 
