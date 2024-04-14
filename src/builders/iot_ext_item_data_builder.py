@@ -20,6 +20,7 @@ class fakefloat(float):
     def __repr__(self):
         return str(self._value)
 
+
 def defaultencode(o):
     if isinstance(o, Decimal):
         # Subclass float with custom repr?
