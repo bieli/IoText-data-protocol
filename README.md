@@ -1,5 +1,4 @@
-[![codecov](https://codecov.io/gh/bieli/IoText-data-protocol/branch/main/graph/badge.svg?token=L8FFQNPQXI)](https://codecov.io/gh/bieli/IoText-data-protocol)
-
+[![codecov](https://codecov.io/gh/bieli/IoText-data-protocol/branch/main/graph/badge.svg?token=L8FFQNPQXI)](https://codecov.io/gh/bieli/IoText-data-protocol) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bieli_IoText-data-protocol&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=bieli_IoText-data-protocol)
 
 # IoText-data-protocol
 Internet of Things data protocol - simplistic text and CSV-friendly IoT data protocol. Options: Schema-less, schema+versioning, building deltas for data values. Easy to re-use.
