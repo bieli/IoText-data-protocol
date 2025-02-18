@@ -67,6 +67,15 @@ class IoTextItemDataBuilder:
         return self.__prepare_msg(items_separator=items_separator)
 
     def to_json(self) -> str:
+                        Item(
+                            kind=ItemTypes.METRIC_ITEM,
+                            name=item["m"],
+                            metric=MetricDataItem(
+                                data_type=data_type,
+                                value=val,
+                            ),
+                        )
+                    )
         self.__str__()
         return IoTextItemDataBuilder.to_json_from_iotext_struct(self.output)
 
@@ -194,3 +203,90 @@ class IoTextItemDataBuilder:
                         )
                     )
         return items
+
+"""
+    @staticmethod
+    def parse_integer(value):
+        return MetricDataTypes.INTEGER, int(value)
+    
+    @staticmethod
+    def parse_bool(value):
+        return MetricDataTypes.BOOL, value == "1"
+    
+    @staticmethod
+    def parse_decimal(value):
+        return MetricDataTypes.DECIMAL, Decimal(str(value))
+    
+    @staticmethod
+    def parse_text(value):
+        return MetricDataTypes.TEXT, str(value)
+    
+    @staticmethod
+    def parse_decimals_list(value):
+        return MetricDataTypes.DECIMALS_LIST, MetricDataItemCodec.from_values_list(MetricDataTypes.DECIMALS_LIST, value)
+    
+    @staticmethod
+    def parse_bools_list(value):
+        return MetricDataTypes.BOOLS_LIST, MetricDataItemCodec.from_values_list(MetricDataTypes.BOOLS_LIST, value)
+    
+    @staticmethod
+    def parse_integers_list(value):
+        return MetricDataTypes.INTEGERS_LIST, MetricDataItemCodec.from_values_list(MetricDataTypes.INTEGERS_LIST, value)
+    
+    @staticmethod
+    def parse_texts_list(value):
+        return MetricDataTypes.TEXTS_LIST, MetricDataItemCodec.from_values_list(MetricDataTypes.TEXTS_LIST, value)
+
+    @staticmethod
+    def handle_multi_key_item(item):
+        parsers = {
+            "i": IoTextItemDataBuilder.parse_integer,
+            "b": IoTextItemDataBuilder.parse_bool,
+            "d": IoTextItemDataBuilder.parse_decimal,
+            "t": IoTextItemDataBuilder.parse_text,
+            "D": IoTextItemDataBuilder.parse_decimals_list,
+            "B": IoTextItemDataBuilder.parse_bools_list,
+            "I": IoTextItemDataBuilder.parse_integers_list,
+            "T": IoTextItemDataBuilder.parse_texts_list
+        }
+   
+        data_type, val = parsers\
+            .get(item["t"], lambda _: (_ for _ in ())\
+            .throw(ValueError(f"Not recognized metric type: '{item['t']}'")))(item["v"])
+
+        return data_type, val
+
+    @staticmethod
+    def handle_single_key_item(item, items) -> List[Item]:
+        key = next(iter(item))
+        val = list(item.values())[0]
+        if key == "t":
+            return items.append(Item(kind=ItemTypes.TIMESTAMP_MILIS, name=val, metric=None))
+        elif key == "d":
+            return items.append(Item(kind=ItemTypes.DEVICE_ID, name=val, metric=None))
+        elif key == "c":
+            return items.append(Item(kind=ItemTypes.CRC, name=val, metric=None))
+        else:
+            raise ValueError(f"Not recognized type item in keys: '{key}'")
+
+    @staticmethod
+    def from_json(json_iotext_msg) -> List[Item]:
+        data_row_from_json = json.loads(json_iotext_msg)
+        items = []
+        for item in data_row_from_json:
+            if len(item.keys()) == 1:
+                items = IoTextItemDataBuilder.handle_single_key_item(item, items)
+            else:
+                data_type, val = IoTextItemDataBuilder.handle_multi_key_item(item)
+                items.append(
+                    Item(
+                        kind=ItemTypes.METRIC_ITEM,
+                        name=item["m"],
+                        metric=MetricDataItem(
+                            data_type=data_type,
+                            value=val,
+                        ),
+                    )
+                )
+        return items
+"""
