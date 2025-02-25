@@ -195,6 +195,7 @@ class IoTextItemDataBuilder:
                     )
         return items
 
+
 """
     @staticmethod
     def parse_integer(value):
