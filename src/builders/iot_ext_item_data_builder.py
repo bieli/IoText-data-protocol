@@ -67,14 +67,6 @@ class IoTextItemDataBuilder:
         return self.__prepare_msg(items_separator=items_separator)
 
     def to_json(self) -> str:
-        Item(
-            kind=ItemTypes.METRIC_ITEM,
-            name=item["m"],
-            metric=MetricDataItem(
-                data_type=data_type,
-                value=val,
-            ),
-        )
         self.__str__()
         return IoTextItemDataBuilder.to_json_from_iotext_struct(self.output)
 
